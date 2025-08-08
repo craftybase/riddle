@@ -22,6 +22,8 @@ module Riddle
         @listen << @port.to_s if @port
         @listen << "9306:mysql41" if @mysql41.is_a?(TrueClass)
         @listen << "#{@mysql41}:mysql41" if @mysql41.is_a?(NUMBER)
+        @listen << "9308:http" if @http.is_a?(TrueClass)
+        @listen << "#{@http}:http" if @http.is_a?(NUMBER)
 
         if @listen.empty? && @address
           @listen << @address
