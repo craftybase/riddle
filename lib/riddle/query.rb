@@ -6,6 +6,18 @@ module Riddle::Query
   ESCAPE_WORDS = /\b(?:MAYBE|NEAR|PARAGRAPH|SENTENCE|ZONE|ZONESPAN)\b/
   MYSQL2_ESCAPE = defined?(Mysql2) && defined?(Mysql::Client)
 
+  @@escape_characters = ESCAPE_CHARACTERS
+
+  def self.escape_characters
+    @@escape_characters
+  end
+
+  def self.escape_characters=(pattern)
+    Riddle.mutex.synchronize do
+      @@escape_characters = pattern
+    end
+  end
+
   def self.connection(address = '127.0.0.1', port = 9312)
     require 'mysql2'
 
@@ -106,7 +118,7 @@ module Riddle::Query
   end
 
   def self.escape(string)
-    string.gsub(ESCAPE_CHARACTERS) { |match| "\\#{match}" }
+    string.gsub(escape_characters) { |match| "\\#{match}" }
       .gsub(ESCAPE_WORDS) { |word| "\\#{word}" }
   end
 
